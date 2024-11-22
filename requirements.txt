@@ -1,0 +1,10 @@
+Django
+djangorestframework
+django-celery-results
+django-celery-beat
+django-redis
+psycopg2
+celery
+redis
+gunicorn
+python-dotenv
