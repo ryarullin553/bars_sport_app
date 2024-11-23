@@ -18,9 +18,8 @@ class ActivityViewSet(ViewSet):
 
     def get(self, request, telegram_id: int, *args, **kwargs):
         user_data = User.objects.filter(telegram_id=telegram_id).values_list('biscenter', 'id', 'town')[0]
- #.filter(Q(biscenter=user_data[0]) | Q(biscenter=None))
         activity = Activity.objects.exclude(user=user_data[1]).filter(date_start__gte=datetime.date.today()).filter(
-            Q(town=user_data[2]) | Q(town_filter=None)).annotate(user_count=Count('user')).filter(users_max_count__gte=F('user_count')).values('id', 'name', 'town', 'date_start', 'user_count', 'users_max_count')
+            Q(town=user_data[2]) | Q(town_filter=None)).filter(Q(biscenter=user_data[0]) | Q(biscenter=None)).annotate(user_count=Count('user')).filter(users_max_count__gte=F('user_count')).values('id', 'name', 'town', 'date_start', 'user_count', 'users_max_count')
         return Response({'get': list(activity)})
 
     def post(self, request, telegram_id: int, *args, **kwargs):
