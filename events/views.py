@@ -3,6 +3,7 @@ from events.models import Event
 from users.models import User
 from django.forms import model_to_dict
 from django.db.models import Q, Sum, F
+from users_in_events.models import UserInEvent
 import datetime
 
 from rest_framework.viewsets import ViewSet
@@ -21,8 +22,7 @@ class EventsViewSet(ViewSet):
     def post(self, request, telegram_id: int, *args, **kwargs):
         event = Event.objects.get(id=self.request.POST['event_id'])
         user = User.objects.get(telegram_id=telegram_id)
-        event.user.add(user)
-        event.save()
+        UserInEvent.objects.create(count=0, user=user, event=event)
         return Response({'post': model_to_dict(event)})
 
     def patch(self, request, telegram_id: int, *args, **kwargs):
