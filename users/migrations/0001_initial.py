@@ -22,7 +22,7 @@ class Migration(migrations.Migration):
                 ('name', models.TextField(verbose_name='Имя')),
                 ('surname', models.TextField(verbose_name='Фамилия')),
                 ('patronymic', models.TextField(verbose_name='Отчество')),
-                ('biscenter', models.TextField(verbose_name='Бизнес-центр')),
+                ('biscenters', models.TextField(verbose_name='Бизнес-центр')),
                 ('age', models.TextField(verbose_name='Возраст')),
                 ('sex', models.BooleanField(verbose_name='Пол')),
                 ('step_norm_day', models.IntegerField(verbose_name='Норма шагов в день')),

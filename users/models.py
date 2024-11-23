@@ -6,10 +6,22 @@ from django.contrib.auth.models import UserManager
 
 
 class User(AbstractBaseUser):
+    MALE = 'Муж'
+    FEMALE = 'Жен'
+    SEX_CHOICES = [
+        (MALE, 'Муж'),
+        (FEMALE, 'Жен'),
+    ]
+
     id = models.UUIDField(
         primary_key=True,
         default=uuid.uuid4,
         editable=False,
+        unique=True
+    )
+    username = models.CharField(
+        max_length=255,
+        verbose_name='Логин',
         unique=True
     )
     name = models.TextField(
@@ -21,33 +33,39 @@ class User(AbstractBaseUser):
     patronymic = models.TextField(
         verbose_name='Отчество'
     )
-    biscenter = models.TextField(
-        verbose_name='Бизнес-центр'
+    biscenter = models.ForeignKey(
+        verbose_name='Бизнес-центр',
+        to='biscenters.Biscenter',
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name='users'
     )
-    age = models.TextField(
+    age = models.IntegerField(
         verbose_name='Возраст'
     )
-    sex = models.BooleanField(
+    sex = models.CharField(
+        max_length=3,
+        choices=SEX_CHOICES,
         verbose_name='Пол'
     )
     step_norm_day = models.IntegerField(
         verbose_name='Норма шагов в день'
     )
-    procent_day = models.DecimalField(
-        max_digits=5,
-        decimal_places=2,
-        verbose_name='Процент дня'
-    )
-    telegram_id = models.IntegerField(
+    telegram_id = models.CharField(
+        max_length=255,
         unique=True,
         verbose_name='Телеграм ID'
     )
-    town = models.CharField(
-        max_length=255,
-        verbose_name='Город'
+    town = models.ForeignKey(
+        verbose_name='Город',
+        to='towns.Town',
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name='users'
     )
-    block = models.BooleanField(
-        verbose_name='Блокировка'
+    is_block = models.BooleanField(
+        verbose_name='Заблокирован',
+        default=False
     )
     is_active = models.BooleanField(
         default=True,
@@ -64,11 +82,11 @@ class User(AbstractBaseUser):
 
     objects = UserManager()
 
-    USERNAME_FIELD = 'telegram_id'
+    USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = []
 
     class Meta:
-        db_table = 'users'
+        db_table = 'user'
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
 

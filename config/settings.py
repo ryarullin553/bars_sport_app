@@ -49,6 +49,8 @@ INSTALLED_APPS = [
     'drf_yasg',
 
     'users.apps.UsersConfig',
+    'towns.apps.TownsConfig',
+    'biscenters.apps.BiscentersConfig',
 ]
 
 MIDDLEWARE = [
