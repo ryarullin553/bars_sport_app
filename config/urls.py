@@ -10,7 +10,8 @@ urlpatterns = [
     path('api/v1/', include('users.urls')),
     path('', include('activities.urls')),
     path('', include('events.urls')),
-    path('', include('telegram_chats.urls'))
+    path('', include('telegram_chats.urls')),
+    path('', include('fibit_logs.urls'))
 ]
 
 urlpatterns += doc_api
