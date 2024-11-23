@@ -1,3 +1,9 @@
 from django.contrib import admin
+from unfold.admin import ModelAdmin
 
-# Register your models here.
+from biscenters.models import Biscenter
+
+
+@admin.register(Biscenter)
+class BiscenterAdmin(ModelAdmin):
+    pass

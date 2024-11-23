@@ -11,7 +11,7 @@ class Event(models.Model):
     )
     name = models.CharField(
         max_length=255,
-        verbose_name='Название'
+        verbose_name='Наименование активности'
     )
     date_start = models.DateTimeField(
         verbose_name='Дата начала'
@@ -22,23 +22,19 @@ class Event(models.Model):
     goal = models.IntegerField(
         verbose_name='Цель'
     )
-    points = models.IntegerField(
-        verbose_name='Очки'
-    )
     team = models.BooleanField(
         verbose_name='Командное событие'
     )
     active = models.BooleanField(
-        default=False,
-        verbose_name='Событие активно',
-        null=True
+        verbose_name='Событие активно'
     )
     telegram_chat = models.ForeignKey(
         verbose_name='Чат в Telegram',
         to='telegram_chats.TelegramChat',
         on_delete=models.SET_NULL,
         null=True,
-        related_name='events'
+        related_name='events',
+        blank=True
     )
     indicator = models.ForeignKey(
         verbose_name='Индикатор',
@@ -51,7 +47,8 @@ class Event(models.Model):
         verbose_name='Бизнес-центр',
         to='biscenters.Biscenter',
         related_name='events',
-        null=True
+        null=True,
+        blank=True
     )
 
     class Meta:
