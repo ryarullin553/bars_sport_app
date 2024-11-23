@@ -28,6 +28,11 @@ class Event(models.Model):
     team = models.BooleanField(
         verbose_name='Командное событие'
     )
+    active = models.BooleanField(
+        default=False,
+        verbose_name='Событие активно',
+        null=True
+    )
     telegram_chat = models.ForeignKey(
         verbose_name='Чат в Telegram',
         to='telegram_chats.TelegramChat',
