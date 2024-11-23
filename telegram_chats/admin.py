@@ -1,3 +1,9 @@
 from django.contrib import admin
+from unfold.admin import ModelAdmin
 
-# Register your models here.
+from telegram_chats.models import TelegramChat
+
+
+@admin.register(TelegramChat)
+class TelegramChatAdmin(ModelAdmin):
+    pass

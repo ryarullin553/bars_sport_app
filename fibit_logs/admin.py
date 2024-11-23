@@ -1,3 +1,9 @@
 from django.contrib import admin
+from unfold.admin import ModelAdmin
 
-# Register your models here.
+from fibit_logs.models import FibitLog
+
+
+@admin.register(FibitLog)
+class FibitLogAdmin(ModelAdmin):
+    pass

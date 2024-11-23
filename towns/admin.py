@@ -1,3 +1,9 @@
 from django.contrib import admin
+from unfold.admin import ModelAdmin
 
-# Register your models here.
+from towns.models import Town
+
+
+@admin.register(Town)
+class TownAdmin(ModelAdmin):
+    pass
