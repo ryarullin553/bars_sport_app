@@ -151,3 +151,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CELERY_BROKER_URL = 'redis://redis:6379/0'
 CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
+
+INTEGRATOR_LOGIN = os.environ.get('INTEGRATOR_LOGIN')
+INTEGRATOR_PASSWORD = os.environ.get('INTEGRATOR_PASSWORD')
+
+BOT_USERNAME = os.environ.get('BOT_USERNAME')
+
+
