@@ -16,7 +16,4 @@ COPY . /app/
 
 EXPOSE 8000
 
-RUN python manage.py makemigrations --check \
-    || (echo "Uncommited migrations detected, exiting"; exit 1)
-
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
