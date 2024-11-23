@@ -1,3 +1,5 @@
+import datetime
+
 from django.forms import model_to_dict
 from django.shortcuts import redirect
 from rest_framework import viewsets
@@ -39,7 +41,16 @@ class FribitGetUserViewSet(ViewSet):
         lst = User.objects.filter(telegram_id=telegram_id)
 
         if lst:
-            return Response(model_to_dict(lst.first()))
+            user = lst.first()
+
+            user_dict = model_to_dict(user)
+            if user.fitbit_user_id:
+                activity = get_today_activity(user.access_token, user.fitbit_user_id)
+                user_dict['bc'] = user.biscenter.name
+                if activity:
+                    user_dict['today_activity'] = activity.get('summary').get('steps')
+                    user_dict['step_norm_day'] = activity.get('goals').get('steps')
+            return Response(user_dict)
         payload = {'user_id': telegram_id, 'login_integrator': INTEGRATOR_LOGIN,
                    'password_integrator': INTEGRATOR_PASSWORD}
         info_user = requests.post('https://test-bo.bars.group/bars_office/telegram_bot/get_employee_info/', data=payload)
@@ -52,8 +63,8 @@ class FribitGetUserViewSet(ViewSet):
         town, _ = Town.objects.get_or_create(name=data_user['town'])
         if data_user:
             lst = User.objects.create(
-                name=data_user['full_name'].split(' ')[0],
-                surname=data_user['full_name'].split(' ')[1],
+                name=data_user['full_name'].split(' ')[1],
+                surname=data_user['full_name'].split(' ')[0],
                 patronymic=data_user['full_name'].split(' ')[2],
                 biscenter=bc,
                 age=data_user['age'],
@@ -73,3 +84,19 @@ class FribitRedirectUserViewSet(ViewSet):
         code = request.GET['code']
 
         return redirect(f"https:///t.me/{BOT_USERNAME}?start={code}")
+
+
+def get_today_activity(token, user_id):
+    headers = {
+        "Authorization": f"Bearer {token}",
+        "Content-Type": "application/x-www-form-urlencoded",
+    }
+    today = datetime.date.today()
+
+    url = f'https://api.fitbit.com/1/user/{user_id}/activities/date/{today.isoformat()}.json'
+
+    response = requests.get(url, headers=headers)
+    if response.status_code != 200:
+        return None
+    else:
+        return response.json()
