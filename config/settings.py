@@ -51,6 +51,12 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'towns.apps.TownsConfig',
     'biscenters.apps.BiscentersConfig',
+    'activities.apps.ActivitiesConfig',
+    'events.apps.EventsConfig',
+    'fibit_logs.apps.FibitLogsConfig',
+    'indicators.apps.IndicatorsConfig',
+    'telegram_chats.apps.TelegramChatsConfig',
+    'users_in_events.apps.UsersInEventsConfig',
 ]
 
 MIDDLEWARE = [

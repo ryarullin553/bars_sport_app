@@ -79,6 +79,22 @@ class User(AbstractBaseUser):
         default=False,
         verbose_name='Суперпользователь'
     )
+    code_verifier = models.TextField(
+        verbose_name='Код Фитбита',
+        null=True
+    )
+    access_token = models.TextField(
+        verbose_name='access token',
+        null=True
+    )
+    refresh_token = models.TextField(
+        verbose_name='refresh token',
+        null=True
+    )
+    fitbit_user_id = models.TextField(
+        verbose_name='ID пользователя Фитбит',
+        null=True
+    )
 
     objects = UserManager()
 
