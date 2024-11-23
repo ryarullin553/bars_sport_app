@@ -1,18 +1,31 @@
 from rest_framework.response import Response
-from rest_framework.views import APIView
-from django.http import HttpResponse
 from events.models import Event
 from users.models import User
-from biscenters.models import Biscenter
 from django.forms import model_to_dict
-from django.db.models import Q
+from django.db.models import Q, Sum, F
+import datetime
 
 from rest_framework.viewsets import ViewSet
 
+
 class EventsViewSet(ViewSet):
-    http_method_names = ['get', 'post', 'head']
+    http_method_names = ['get', 'post', 'patch']
 
     def get(self, request, telegram_id: int, *args, **kwargs):
-        user_data = User.objects.filter(telegram_id=telegram_id).values_list('biscenter','id')[0]
-        events = Event.objects.exlude(user=user_data[1]).filter(active=True).filter(Q(biscenter=user_data[0]) | Q(biscenter=None)).values()
-        return Response({'post': model_to_dict(events)})
+        user_data = User.objects.filter(telegram_id=telegram_id).values_list('biscenter', 'id')[0]
+        events = Event.objects.exclude(users_in_events__user=user_data[1]).filter(date_start__lte=datetime.datetime.now(), date_end__gte=datetime.datetime.now()).filter(
+            Q(biscenter=user_data[0]) | Q(biscenter=None)).annotate(all_points=Sum('users_in_events__count')).filter(goal__gte=F('all_points')).values('id', 'name', 'date_start', 'date_end', 'goal', 'all_points', 'indicator__name')
+
+        return Response({'get': list(events)})
+
+    def post(self, request, telegram_id: int, *args, **kwargs):
+        event = Event.objects.get(id=self.request.POST['event_id'])
+        user = User.objects.get(telegram_id=telegram_id)
+        event.user.add(user)
+        event.save()
+        return Response({'post': model_to_dict(event)})
+
+    def patch(self, request, telegram_id: int, *args, **kwargs):
+        user_data = User.objects.filter(telegram_id=telegram_id).values_list('biscenter', 'id')[0]
+        events = Event.objects.filter(users_in_events__user=user_data[1]).annotate(all_points=Sum('users_in_events__count')).values('id', 'name', 'date_start', 'date_end', 'goal', 'all_points', 'indicator__name')
+        return Response({'patch': list(events)})
