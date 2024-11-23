@@ -148,3 +148,10 @@ MEDIA_ROOT = BASE_DIR / MEDIA_URL
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+INTEGRATOR_LOGIN = os.environ.get('INTEGRATOR_LOGIN')
+INTEGRATOR_PASSWORD = os.environ.get('INTEGRATOR_PASSWORD')
+
+BOT_USERNAME = os.environ.get('BOT_USERNAME')
+
+
