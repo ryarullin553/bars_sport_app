@@ -1,4 +1,5 @@
 services:
+
   backend:
     build:
       context: .
@@ -15,6 +16,7 @@ services:
       - default
     depends_on:
       - database
+
   database:
     image: postgres:13-alpine
     environment:
@@ -25,6 +27,42 @@ services:
       - 5432
     ports:
       - 5432:5432/tcp
+
+  redis:
+    container_name: redis
+    hostname: redis
+    image: redis:7.2-rc-alpine3.18
+
+  worker:
+    container_name: worker
+    build:
+      context: .
+    hostname: worker
+    entrypoint: celery
+    command: -A celery_app.app worker --loglevel=info
+    volumes:
+      - .:/app:rw
+    links:
+      - redis
+    depends_on:
+      - redis
+      - database
+
+  flower:
+    container_name: flower
+    build:
+      context: .
+    hostname: flower
+    entrypoint: celery
+    command: -A celery_app.app flower
+    volumes:
+      - .:/app:rw
+    links:
+      - redis
+    depends_on:
+      - redis
+    ports:
+      - 5555:5555
 
 networks:
   default:
