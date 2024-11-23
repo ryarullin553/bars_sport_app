@@ -157,4 +157,9 @@ INTEGRATOR_PASSWORD = os.environ.get('INTEGRATOR_PASSWORD')
 
 BOT_USERNAME = os.environ.get('BOT_USERNAME')
 
+UNFOLD = {
+    "SITE_TITLE": "Барс Спорт",
+    "SITE_HEADER": "Барс Спорт",
+}
+
 
