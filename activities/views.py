@@ -14,7 +14,7 @@ from rest_framework.viewsets import ViewSet
 
 
 class ActivityViewSet(ViewSet):
-    http_method_names = ['get', 'post']
+    http_method_names = ['get', 'post', 'patch']
 
     def get(self, request, telegram_id: int, *args, **kwargs):
         user_data = User.objects.filter(telegram_id=telegram_id).values_list('biscenter', 'id', 'town')[0]
@@ -30,8 +30,8 @@ class ActivityViewSet(ViewSet):
         activity.save()
         return Response({'post': model_to_dict(activity)})
 
-    def get_user_activity(self, telegram_id: int):
+    def patch(self, request, telegram_id: int, *args, **kwargs):
         user_data = User.objects.filter(telegram_id=telegram_id).values_list('biscenter', 'id', 'town')[0]
         activity = Activity.objects.filter(user=user_data[1]).filter(date_start__gte=datetime.date.today()).values('id', 'name', 'town', 'date_start')
-        return Response({'get': list(activity)})
+        return Response({'patch': list(activity)})
 
