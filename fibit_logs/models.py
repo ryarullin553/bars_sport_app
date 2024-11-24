@@ -35,6 +35,3 @@ class FibitLog(models.Model):
         verbose_name_plural = 'Логи Fibit'
 
 
-    def __str__(self):
-        return self.id
-
