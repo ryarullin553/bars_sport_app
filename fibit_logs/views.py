@@ -9,7 +9,7 @@ from fibit_logs.tasks import main_task, portal_achivments
 
 # Create your views here.
 class RatingViewSet(ViewSet):
-    http_method_names = ['get', 'post', 'path']
+    http_method_names = ['get', 'post', 'patch']
 
     def get(self, request, telegram_id: int, *args, **kwargs):
         query = FibitLog.objects. \
@@ -28,6 +28,6 @@ class RatingViewSet(ViewSet):
         main_task()
         return Response({})
 
-    def path(self, request, telegram_id: int, *args, **kwargs):
+    def patch(self, request, telegram_id: int, *args, **kwargs):
         portal_achivments()
         return Response({})
