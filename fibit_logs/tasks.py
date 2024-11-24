@@ -35,9 +35,8 @@ def main_task():
 def portal_achivments():
     for i in User.objects.exclude(fitbit_user_id=None):
         today = datetime.datetime.now()
-        indicator_step = Indicator.objects.filter(name='steps').values_list('id', 'name')[0]
         count = 0
-        for i in FibitLog.objects.filter(user_id=i.id, indicator_id=indicator_step, date_gte=today - timedelta(days=7)).values_list('count', flat=True):
+        for i in FibitLog.objects.filter(user_id=i.id, indicator__name='steps', date_gte=today - timedelta(days=7)).values_list('count', flat=True):
             count += i
         if 0 <= count <= 5000:
             payload = {'USER': i.username,'ACHIEVEMENT': 'TEST_HACKATHON' ,'EXTERNAL_ID': 1}
