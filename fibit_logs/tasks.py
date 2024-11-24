@@ -16,7 +16,7 @@ def main_task():
             "Authorization": f"Bearer {i.access_token}",
             "Content-Type": "application/x-www-form-urlencoded",
         }
-        today = datetime.datetime.now()
+        today = datetime.date.today()
 
         indicators = Indicator.objects.all().values_list('id', 'name')
 
