@@ -26,9 +26,13 @@ def main_task():
         data = response.json()
 
         for j in indicators:
-            FibitLog.objects.create(user_id=i.id,indicator_id=j[0],count=getattr(data.get('summary'), j[1]))
-            for k in UserInEvent.objects.filter(user_id=i.id).filter(event__indicator_id=j[0]).filter(event__date_start__lte=datetime.datetime.now(), event__date_end__gte=datetime.datetime.now()):
-                count = k.count + getattr(data.get('summary'), j[1])
+            FibitLog.objects.create(user_id=i.id, indicator_id=j[0],
+                                    count=data.get('summary', {}).get(j[1]))
+            for k in UserInEvent.objects.filter(user_id=i.id).filter(
+                    event__indicator_id=j[0]).filter(
+                    event__date_start__lte=datetime.datetime.now(),
+                    event__date_end__gte=datetime.datetime.now()):
+                count = k.count + data.get('summary', {}).get(j[1])
                 k.update(count=count)
 
 @shared_task(base=Singleton)
