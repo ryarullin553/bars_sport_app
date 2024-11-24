@@ -14,8 +14,7 @@ class EventsViewSet(ViewSet):
 
     def get(self, request, telegram_id: int, *args, **kwargs):
         user_data = User.objects.filter(telegram_id=telegram_id).values_list('biscenter', 'id')[0]
-        events = Event.objects.exclude(users_in_events__user=user_data[1]).filter(date_start__lte=datetime.datetime.now(), date_end__gte=datetime.datetime.now()).filter(
-            Q(biscenter=user_data[0]) | Q(biscenter=None)).annotate(all_points=Sum('users_in_events__count')).filter(goal__gte=F('all_points')).values('id', 'name', 'date_start', 'date_end', 'goal', 'all_points', 'indicator__name')
+        events = Event.objects.exclude(users_in_events__user=user_data[1]).annotate(all_points=Sum('users_in_events__count')).values('id', 'name', 'date_start', 'date_end', 'goal', 'all_points', 'indicator__name')
 
         return Response({'get': list(events)})
 
@@ -23,7 +22,7 @@ class EventsViewSet(ViewSet):
         event = Event.objects.get(id=self.request.POST['event_id'])
         user = User.objects.get(telegram_id=telegram_id)
         UserInEvent.objects.create(count=0, user=user, event=event)
-        return Response({'post': model_to_dict(event)})
+        return Response({'post': True})
 
     def patch(self, request, telegram_id: int, *args, **kwargs):
         user_data = User.objects.filter(telegram_id=telegram_id).values_list('biscenter', 'id')[0]
