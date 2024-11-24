@@ -58,11 +58,11 @@ class FribitGetUserViewSet(ViewSet):
         data_user = info_user.json()
         data_user = data_user['extra']
         print(data_user)
-
-        bc, _ = Biscenter.objects.get_or_create(name=data_user['bc'])
-        town, _ = Town.objects.get_or_create(name=data_user['town'])
         if data_user:
+            bc, _ = Biscenter.objects.get_or_create(name=data_user['bc'])
+            town, _ = Town.objects.get_or_create(name=data_user['town'])
             lst = User.objects.create(
+                username=data_user['username'],
                 name=data_user['full_name'].split(' ')[1],
                 surname=data_user['full_name'].split(' ')[0],
                 patronymic=data_user['full_name'].split(' ')[2],

@@ -8,6 +8,7 @@ from datetime import timedelta
 import requests
 from celery import shared_task
 from celery_singleton import Singleton
+import json
 
 @shared_task(base=Singleton)
 def main_task():
@@ -37,21 +38,23 @@ def main_task():
 
 @shared_task(base=Singleton)
 def portal_achivments():
+    headers = {
+        'Content-Type': 'application/json'
+    }
     for i in User.objects.exclude(fitbit_user_id=None):
+        url = 'https://192.168.227.23/rest/20897/s0b113uk7cgyqeub/fsn_bars.achievement.assign.json'
         today = datetime.datetime.now()
         count = 0
-        for i in FibitLog.objects.filter(user_id=i.id, indicator__name='steps', date_gte=today - timedelta(days=7)).values_list('count', flat=True):
-            count += i
-        if 0 <= count <= 5000:
-            payload = {'USER': i.username,'ACHIEVEMENT': 'TEST_HACKATHON' ,'EXTERNAL_ID': 1}
-            requests.post('https://192.168.227.23/rest/20897/s0b113uk7cgyqeub/fsn_bars.achievement.assign.json',data=payload)
+        for k in FibitLog.objects.filter(user_id=i.id, indicator__name='steps', date__gte=today - timedelta(days=7)).values_list('count', flat=True):
+            count += k
+        if 0 < count/7 <= 5000:
+            payload = json.dumps({'USER': i.username,'ACHIEVEMENT': 'TEST_HACKATHON' ,'EXTERNAL_ID': 1})
+            requests.request("POST", url, headers=headers, data=payload, verify=False)
 
-        if 5000 < count <= 10000:
-            payload = {'USER': i.username, 'ACHIEVEMENT': 'TEST_HACKATHON2', 'EXTERNAL_ID': 2}
-            requests.post('https://192.168.227.23/rest/20897/s0b113uk7cgyqeub/fsn_bars.achievement.assign.json',
-                          data=payload)
+        if 5000 < count/7 <= 10000:
+            payload = json.dumps({'USER': i.username, 'ACHIEVEMENT': 'TEST_HACKATHON_2', 'EXTERNAL_ID': 2})
+            requests.request("POST", url, headers=headers, data=payload, verify=False)
 
-        if count > 10000:
-            payload = {'USER': i.username, 'ACHIEVEMENT': 'TEST_HACKATHON3', 'EXTERNAL_ID': 3}
-            requests.post('https://192.168.227.23/rest/20897/s0b113u7cgyqeub/fsn_bars.achievement.assign.json',
-                          data=payload)
+        if count/7 > 10000:
+            payload = json.dumps({'USER': i.username, 'ACHIEVEMENT': 'TEST_HACKATHON_3', 'EXTERNAL_ID': 3})
+            requests.request("POST", url, headers=headers, data=payload, verify=False)
