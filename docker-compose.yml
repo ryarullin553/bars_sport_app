@@ -48,6 +48,21 @@ services:
       - redis
       - database
 
+  celerybeat:
+    container_name: worker_beat
+    build:
+      context: .
+    hostname: worker
+    entrypoint: celery
+    command: -A celery_app.app beat --loglevel=info
+    volumes:
+      - .:/app:rw
+    links:
+      - redis
+    depends_on:
+      - redis
+      - database
+
   flower:
     container_name: flower
     build:

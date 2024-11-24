@@ -16,6 +16,7 @@ class FibitLog(models.Model):
         related_name='fibit_logs'
     )
     date = models.DateTimeField(
+        auto_now=True,
         verbose_name='Дата'
     )
     count = models.IntegerField(
